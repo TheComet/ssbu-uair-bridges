@@ -50,16 +50,16 @@ class Window(Updateable):
             self,
             Trajectory(self.calc),
             Hitstun(self.calc),
-            Dial("fh1 delay",   (10, 10),  150, (0, 10), assign_fh1),
-            Dial("uair1 delay", (10, 30),  150, (0, 10), assign_uair1),
-            Dial("uair2 delay", (10, 50),  150, (0, 10), assign_uair2),
-            Dial("ff1 delay",   (10, 70),  150, (0, 10), assign_ff1),
-            Dial("fh2 delay",   (10, 90),  150, (0, 10), assign_fh2),
-            Dial("uair3 delay", (10, 110), 150, (0, 10), assign_uair3),
-            Dial("uair4 delay", (10, 130), 150, (0, 10), assign_uair4),
-            Dial("ff2 delay",   (10, 150), 150, (0, 10), assign_ff2),
-            Dial("fh3 delay",   (10, 170), 150, (0, 10), assign_fh3),
-            Dial("uair5 delay", (10, 190), 150, (0, 10), assign_uair5)
+            Dial("uair1 delay", (10, 10),  150, (0, 10), assign_uair1),
+            Dial("uair2 delay", (10, 30),  150, (0, 10), assign_uair2),
+            Dial("uair3 delay", (10, 50),  150, (0, 10), assign_uair3),
+            Dial("uair4 delay", (10, 70),  150, (0, 10), assign_uair4),
+            Dial("uair5 delay", (10, 90),  150, (0, 10), assign_uair5),
+            Dial("fh1 delay",   (10, 110), 150, (0, 10), assign_fh1),
+            Dial("fh2 delay",   (10, 130), 150, (0, 10), assign_fh2),
+            Dial("fh3 delay",   (10, 150), 150, (0, 10), assign_fh3),
+            Dial("ff1 delay",   (10, 170), 150, (0, 10), assign_ff1),
+            Dial("ff2 delay",   (10, 190), 150, (0, 10), assign_ff2)
         ]
 
         self.__last_time_updated = None
