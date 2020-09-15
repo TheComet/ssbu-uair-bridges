@@ -33,6 +33,8 @@ class UairBridgesCalculator:
         self.uair5 = 0
         self.uair5_end = 0
 
+        # hitx is first frame where uair connects
+        # hitx_end is the first frame when the opponent becomes actionable
         self.hit1 = 0
         self.hit1_end = 0
         self.hit2 = 0
@@ -116,11 +118,11 @@ class UairBridgesCalculator:
         self.hit4 = self.uair4 + 7 - 1
         self.hit5 = self.uair5 + 7 - 1
 
-        self.hit1_end = self.hit1 + UAIR_HITSTUN - 1
-        self.hit2_end = self.hit2 + UAIR_HITSTUN - 1
-        self.hit3_end = self.hit3 + UAIR_HITSTUN - 1
-        self.hit4_end = self.hit4 + UAIR_HITSTUN - 1
-        self.hit5_end = self.hit5 + UAIR_HITSTUN - 1
+        self.hit1_end = self.hit1 + UAIR_HITSTUN
+        self.hit2_end = self.hit2 + UAIR_HITSTUN
+        self.hit3_end = self.hit3 + UAIR_HITSTUN
+        self.hit4_end = self.hit4 + UAIR_HITSTUN
+        self.hit5_end = self.hit5 + UAIR_HITSTUN
 
     def get_height_at_frame_with_ff(self, frame, ff):
         if frame < self.fh1 + 3:
