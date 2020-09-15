@@ -58,6 +58,10 @@ class UairBridgesCalculator:
         self.fh3_delay = 0
         self.uair5_delay = 0
 
+        # fastfall calculation mode. If true, the fastfall timing will be relative to the second uair. If false, the
+        # fastfall timing is calculated so pikachu lands on frame 18 of uair2.
+        self.pin_ff_to_uair = False
+
         self.calculate_frames()
 
     def delay_uair1(self, frames):
@@ -76,12 +80,23 @@ class UairBridgesCalculator:
         self.uair1 = self.fh1 + JUMPSQUAT + 1 + self.uair1_delay
         self.uair1_end = self.uair1 + UAIR_DURATION - 1
 
+        # First active uair hitbox is frame 4. There are 3 strong hitboxes, 2 weak. Tests show it usually connects
+        # 7 frames after input
+        self.hit1 = self.uair1 + 7 - 1
+        self.hit1_end = self.hit1 + UAIR_HITSTUN
+
         # Pretty much same calculations for uair2
         self.uair2 = self.uair1_end + 1 + self.uair2_delay
         self.uair2_end = self.uair2 + UAIR_DURATION - 1
 
+        self.hit2 = self.uair2 + 7 - 1
+        self.hit2_end = self.hit2 + UAIR_HITSTUN
+
         # Find optimal fast fall timing and find landing frame
-        self.ff1 = self.find_optimal_ff_frame(self.uair2) + self.ff1_delay
+        if self.pin_ff_to_uair:
+            self.ff1 = self.hit2 + 1 + self.ff1_delay
+        else:
+            self.ff1 = self.find_optimal_ff_frame(self.uair2) + self.ff1_delay
         self.land1 = self.find_landing_frame(self.uair2, self.ff1)
 
         # Calculate where frame 18 of uair2 begins (AC start)
@@ -94,10 +109,19 @@ class UairBridgesCalculator:
         self.uair3 = self.fh2 + JUMPSQUAT + 1 + self.uair3_delay
         self.uair3_end = self.uair3 + UAIR_DURATION - 1
 
+        self.hit3 = self.uair3 + 7 - 1
+        self.hit3_end = self.hit3 + UAIR_HITSTUN
+
         self.uair4 = self.uair3_end + 1 + self.uair4_delay
         self.uair4_end = self.uair4 + UAIR_DURATION - 1
 
-        self.ff2 = self.find_optimal_ff_frame(self.uair4) + self.ff2_delay
+        self.hit4 = self.uair4 + 7 - 1
+        self.hit4_end = self.hit4 + UAIR_HITSTUN
+
+        if self.pin_ff_to_uair:
+            self.ff2 = self.hit4 + 1 + self.ff2_delay
+        else:
+            self.ff2 = self.find_optimal_ff_frame(self.uair4) + self.ff2_delay
         self.land2 = self.find_landing_frame(self.uair4, self.ff2)
         self.uair4_ac_start = self.uair4 + UAIR_AC - 1
 
@@ -106,22 +130,7 @@ class UairBridgesCalculator:
         self.uair5 = self.fh3 + JUMPSQUAT + 1 + self.uair5_delay
         self.uair5_end = self.uair5 + UAIR_DURATION - 1
 
-        ################################################################
-        # Hitstun calculations
-        ################################################################
-
-        # First active uair hitbox is frame 4. There are 3 strong hitboxes, 2 weak. Tests show it usually connects
-        # 7 frames after input
-        self.hit1 = self.uair1 + 7 - 1
-        self.hit2 = self.uair2 + 7 - 1
-        self.hit3 = self.uair3 + 7 - 1
-        self.hit4 = self.uair4 + 7 - 1
         self.hit5 = self.uair5 + 7 - 1
-
-        self.hit1_end = self.hit1 + UAIR_HITSTUN
-        self.hit2_end = self.hit2 + UAIR_HITSTUN
-        self.hit3_end = self.hit3 + UAIR_HITSTUN
-        self.hit4_end = self.hit4 + UAIR_HITSTUN
         self.hit5_end = self.hit5 + UAIR_HITSTUN
 
     def get_height_at_frame_with_ff(self, frame, ff):

@@ -14,6 +14,7 @@ def points_to_segments(points):
 class Trajectory(Updateable):
     def __init__(self, calc):
         self.calc = calc
+        self.font = pygame.font.Font("sans.ttf", 18)
 
     def draw(self, surface):
         points = list(self.points())
@@ -53,11 +54,39 @@ class Trajectory(Updateable):
                 pygame.draw.circle(surface, Config.HIT_COLOR, point, 4, 1)
             if i in (self.calc.ff1, self.calc.ff2):
                 pygame.draw.circle(surface, Config.FF_COLOR, point, 6, 1)
-            if i == self.calc.uair2_ac_start or i == self.calc.uair4_ac_start:
-                pygame.draw.circle(surface, Config.AC_START_COLOR, point, 4, 1)
+
+            if i == self.calc.uair2_ac_start:
+                if self.calc.land1 - self.calc.uair2 > 17:
+                    color = (255, 255, 0)
+                elif self.calc.land1 - self.calc.uair2 < 17:
+                    color = (255, 0, 0)
+                    self.draw_point_label(surface, "Missed AC", (255, 0, 0), point, (point[0]+15, point[1]+40))
+                else:
+                    color = (0, 255, 0)
+                pygame.draw.circle(surface, color, point, 4, 1)
+            if i == self.calc.uair4_ac_start:
+                if self.calc.land2 - self.calc.uair4 > 17:
+                    color = (255, 255, 0)
+                elif self.calc.land2 - self.calc.uair4 < 17:
+                    color = (255, 0, 0)
+                    self.draw_point_label(surface, "Missed AC", (255, 0, 0), point, (point[0]+15, point[1]+40))
+                else:
+                    color = (0, 255, 0)
+                pygame.draw.circle(surface, color, point, 4, 1)
 
     def points(self):
         # first full hop
         for i in range(self.calc.uair5_end):
             yield int(i * Config.SCALEX + Config.OFFSETX),\
                   int(self.calc.get_height_at_frame(i) * Config.SCALEY + Config.OFFSETY)
+
+    def draw_point_label(self, surface, text, color, target_pos, text_pos):
+        text = self.font.render(text, True, color)
+        rect = text.get_rect()
+
+        pygame.draw.line(surface, color, target_pos, (text_pos[0], text_pos[1] - 2), 1)
+        pygame.draw.line(surface, color, (text_pos[0], text_pos[1] - 2), (text_pos[0]+rect.width, text_pos[1] - 2), 1)
+
+        rect.left = text_pos[0]
+        rect.bottom = text_pos[1]
+        surface.blit(text, rect)

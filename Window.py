@@ -6,6 +6,7 @@ from Trajectory import Trajectory
 from UairBridgesCalculator import UairBridgesCalculator
 from Dial import Dial
 from Hitstun import Hitstun
+from Radio import Radio
 from time import time
 
 
@@ -45,21 +46,40 @@ class Window(Updateable):
         def assign_uair5(value):
             self.calc.uair5_delay = value
             self.calc.calculate_frames()
+        def assign_ff_mode(enable):
+            self.calc.pin_ff_to_uair = enable
+            ff1_delay.minmax[0] = -10 if enable else 0
+            ff1_delay.value = max(ff1_delay.value, 0)
+            ff2_delay.minmax[0] = -10 if enable else 0
+            ff2_delay.value = max(ff2_delay.value, 0)
+            self.calc.calculate_frames()
+
+        uair1_delay = Dial("uair1 delay", (10, 10),  [0, 10], assign_uair1)
+        uair2_delay = Dial("uair2 delay", (10, 30),  [0, 10], assign_uair2)
+        uair3_delay = Dial("uair3 delay", (10, 50),  [0, 10], assign_uair3)
+        uair4_delay = Dial("uair4 delay", (10, 70),  [0, 10], assign_uair4)
+        uair5_delay = Dial("uair5 delay", (10, 90),  [0, 10], assign_uair5)
+        fh1_delay   = Dial("fh1 delay",   (10, 110), [0, 10], assign_fh1)
+        fh2_delay   = Dial("fh2 delay",   (10, 130), [0, 10], assign_fh2)
+        fh3_delay   = Dial("fh3 delay",   (10, 150), [0, 10], assign_fh3)
+        ff1_delay   = Dial("ff1 delay",   (10, 170), [0, 10], assign_ff1)
+        ff2_delay   = Dial("ff2 delay",   (10, 190), [0, 10], assign_ff2)
 
         self.__updateables = [
             self,
             Trajectory(self.calc),
             Hitstun(self.calc),
-            Dial("uair1 delay", (10, 10),  150, (0, 10), assign_uair1),
-            Dial("uair2 delay", (10, 30),  150, (0, 10), assign_uair2),
-            Dial("uair3 delay", (10, 50),  150, (0, 10), assign_uair3),
-            Dial("uair4 delay", (10, 70),  150, (0, 10), assign_uair4),
-            Dial("uair5 delay", (10, 90),  150, (0, 10), assign_uair5),
-            Dial("fh1 delay",   (10, 110), 150, (0, 10), assign_fh1),
-            Dial("fh2 delay",   (10, 130), 150, (0, 10), assign_fh2),
-            Dial("fh3 delay",   (10, 150), 150, (0, 10), assign_fh3),
-            Dial("ff1 delay",   (10, 170), 150, (0, 10), assign_ff1),
-            Dial("ff2 delay",   (10, 190), 150, (0, 10), assign_ff2)
+            uair1_delay,
+            uair2_delay,
+            uair3_delay,
+            uair4_delay,
+            uair5_delay,
+            fh1_delay,
+            fh2_delay,
+            fh3_delay,
+            ff1_delay,
+            ff2_delay,
+            Radio(("Calculate optimal fastfall", "Pin fastfall to uair"), (200, 10), assign_ff_mode)
         ]
 
         self.__last_time_updated = None
