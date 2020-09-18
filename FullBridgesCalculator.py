@@ -7,9 +7,10 @@ JUMPSQUAT = 3
 UAIR_DURATION = 26
 UAIR_AC = 18
 FF_LANDING_LAG = 4
+SLOW_LANDING_LAG = 14
 
 
-class UairBridgesCalculator:
+class FullBridgesCalculator:
     def __init__(self):
         self.fh1 = 0
         self.uair1 = 0
@@ -62,8 +63,6 @@ class UairBridgesCalculator:
         # fastfall timing is calculated so pikachu lands on frame 18 of uair2.
         self.pin_ff_to_uair = False
 
-        self.calculate_frames()
-
     def delay_uair1(self, frames):
         self.uair1_delay = frames
         self.calculate_frames()
@@ -103,7 +102,10 @@ class UairBridgesCalculator:
         self.uair2_ac_start = self.uair2 + UAIR_AC - 1
 
         # Calculate next full hop
-        self.fh2 = self.land1 + FF_LANDING_LAG + self.fh2_delay
+        if self.land1 - self.uair2 < UAIR_AC - 1:
+            self.fh2 = self.land1 + SLOW_LANDING_LAG + self.fh2_delay
+        else:
+            self.fh2 = self.land1 + FF_LANDING_LAG + self.fh2_delay
 
         # Exact same code as above, but for uair3 and uair4
         self.uair3 = self.fh2 + JUMPSQUAT + 1 + self.uair3_delay
@@ -125,7 +127,10 @@ class UairBridgesCalculator:
         self.land2 = self.find_landing_frame(self.uair4, self.ff2)
         self.uair4_ac_start = self.uair4 + UAIR_AC - 1
 
-        self.fh3 = self.land2 + FF_LANDING_LAG + self.fh3_delay
+        if self.land2 - self.uair4 < UAIR_AC - 1:
+            self.fh3 = self.land2 + SLOW_LANDING_LAG + self.fh3_delay
+        else:
+            self.fh3 = self.land2 + FF_LANDING_LAG + self.fh3_delay
 
         self.uair5 = self.fh3 + JUMPSQUAT + 1 + self.uair5_delay
         self.uair5_end = self.uair5 + UAIR_DURATION - 1
@@ -265,7 +270,7 @@ FH_DATA = [
 ]
 
 if __name__ == '__main__':
-    c = UairBridgesCalculator()
+    c = FullBridgesCalculator()
     print(f"uair1: {c.uair1}")
     print(f"uair2: {c.uair2}")
     print(f"ff: {c.ff1}")
