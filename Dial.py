@@ -5,14 +5,17 @@ from Updateable import Updateable
 
 
 class Dial(Updateable):
-    def __init__(self, text, pos, minmax, set_value):
+    def __init__(self, text, pos, minmax, set_value, value=0):
         self.text = text
         self.pos = pos
         self.minmax = minmax
         self.set_value = set_value
-        self.value = 0
+        self.value = value
 
         self.font = pygame.font.Font('sans.ttf', 18)
+
+        if self.value != 0:
+            self.set_value(self.value)
 
     def process_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:

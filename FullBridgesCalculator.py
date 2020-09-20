@@ -7,6 +7,7 @@ JUMPSQUAT = 3
 UAIR_DURATION = 26
 UAIR_AC = 18
 FF_LANDING_LAG = 4
+FF_FIRST_FRAME = 23
 SLOW_LANDING_LAG = 14
 
 
@@ -212,7 +213,7 @@ GRAVITY = 0.095
 FALL_SPEED = 1.55
 FAST_FALL_SPEED = 2.48
 
-FH_DATA = [
+FH_DATA = (
     0.75,   # first airborne frame
     1.25,
     1.65,
@@ -267,11 +268,4 @@ FH_DATA = [
     0.4,
     0.25,
     0
-]
-
-if __name__ == '__main__':
-    c = FullBridgesCalculator()
-    print(f"uair1: {c.uair1}")
-    print(f"uair2: {c.uair2}")
-    print(f"ff: {c.ff1}")
-    print(f"land: {c.land1}")
+)

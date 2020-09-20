@@ -8,10 +8,26 @@ from FullBridgeHitstun import FullBridgeHitstun
 from PlatformBridgesTrajectory import PlatformBridgesTrajectory
 from PlatformBridgesCalculator import PlatformBridgesCalculator
 from PlatformBridgesHitstun import PlatformBridgesHitstun
+from DJUairTrajectory import DJUairTrajectory
+from DJUairCalculator import DJUairCalculator
+from DJUairHitstun import DJUairHitstun
 from Dial import Dial
 from Radio import Radio
 from Checkbox import Checkbox
 from time import time
+
+
+PLATFORM_HEIGHTS = (
+    1.9906,  # lylat side
+    2.4119,  # BF
+    2.4119,  # SBF
+    2.7075,  # PS2
+    2.7518,  # Town
+    2.7875,  # lylat mid
+    2.8468,  # Yoshi's
+    2.8698,  # Smashville
+    3,       # Kalos
+)
 
 
 def full_bridge_updateables():
@@ -112,11 +128,11 @@ def full_bridge_updateables():
         global sync_reps
         sync_reps = enable
 
-    uair1_delay = Dial("uair1 delay", (10, 10), [-1, 10], assign_uair1)
+    uair1_delay = Dial("uair1 delay", (10, 10), [0, 10], assign_uair1)
     uair2_delay = Dial("uair2 delay", (10, 30), [0, 10], assign_uair2)
-    uair3_delay = Dial("uair3 delay", (10, 50), [-1, 10], assign_uair3)
+    uair3_delay = Dial("uair3 delay", (10, 50), [0, 10], assign_uair3)
     uair4_delay = Dial("uair4 delay", (10, 70), [0, 10], assign_uair4)
-    uair5_delay = Dial("uair5 delay", (10, 90), [-1, 10], assign_uair5)
+    uair5_delay = Dial("uair5 delay", (10, 90), [0, 10], assign_uair5)
     fh1_delay = Dial("fh1 delay", (10, 120), [0, 10], assign_fh1)
     fh2_delay = Dial("fh2 delay", (10, 140), [0, 10], assign_fh2)
     fh3_delay = Dial("fh3 delay", (10, 160), [0, 10], assign_fh3)
@@ -145,19 +161,6 @@ def full_bridge_updateables():
 
 
 def platform_bridges_updatedables():
-
-    # platform heights
-    platform_heights = [
-        1.9906,  # lylat
-        2.4119,  # BF
-        2.4119,  # SBF
-        2.7075,  # PS2
-        2.6982,  # Yoshi's
-        2.7518,  # Town
-        2.8698,  # Smashville
-        3,       # Kalos
-    ]
-
     def assign_jump1(value):
         calc.jump1_delay = value
         calc.calculate_frames()
@@ -183,11 +186,11 @@ def platform_bridges_updatedables():
         calc.calculate_frames()
 
     def assign_plat_height(value):
-        calc.plat_height = platform_heights[value]
+        calc.plat_height = PLATFORM_HEIGHTS[value]
         calc.calculate_frames()
 
     calc = PlatformBridgesCalculator()
-    calc.plat_height = platform_heights[0]
+    calc.plat_height = PLATFORM_HEIGHTS[0]
     calc.calculate_frames()
 
     return [
@@ -199,7 +202,64 @@ def platform_bridges_updatedables():
         Dial("uair2 delay", (10, 70), (0, 10), assign_uair2),
         Dial("sh2 delay",   (10, 90), (0, 10), assign_sh2),
         Checkbox("Do fullhop", (50, 120), assign_fh, False),
-        Radio(("Lylat", "BF", "SBF", "PS2", "Yoshi's", "Town", "Smashville", "Kalos"), (255, 10), assign_plat_height)
+        Radio(("Lylat Side", "BF", "SBF", "PS2", "Town", "Lylat Mid", "Yoshi's", "Smashville", "Kalos"), (255, 10),
+              assign_plat_height)
+    ]
+
+
+def dj_uair_updatedables():
+    def assign_incoming_hitstun(value):
+        calc.incoming_hitstun = value
+
+    def assign_fh1(value):
+        calc.fh1_delay = value
+        calc.calculate_frames()
+
+    def assign_ff1(value):
+        calc.ff1_delay = value
+        calc.calculate_frames()
+
+    def assign_dj1(value):
+        calc.dj1_delay = value
+        calc.calculate_frames()
+
+    def assign_uair1(value):
+        calc.uair1_delay = value
+        calc.calculate_frames()
+
+    def assign_uair2(value):
+        calc.uair2_delay = value
+        calc.calculate_frames()
+
+    def assign_uair3(value):
+        calc.uair3_delay = value
+        calc.calculate_frames()
+
+    def assign_sh2(value):
+        calc.sh2_delay = value
+        calc.calculate_frames()
+
+    def assign_plat_height(value):
+        calc.plat_height = PLATFORM_HEIGHTS[value]
+        calc.calculate_frames()
+
+    calc = DJUairCalculator()
+    calc.plat_height = PLATFORM_HEIGHTS[0]
+    calc.calculate_frames()
+
+    return [
+        DJUairTrajectory(calc),
+        DJUairHitstun(calc),
+        Dial("Incoming hitstun", (10, 10), (0, 18), assign_incoming_hitstun, value=15),
+        Dial("fh1 delay",        (10, 30), (0, 10), assign_fh1),
+        Dial("ff delay",         (10, 50), (0, 20), assign_ff1),
+        Dial("dj delay",         (10, 70), (0, 20), assign_dj1, value=5),
+        Dial("uair1 delay",      (10, 90), (0, 10), assign_uair1),
+        Dial("uair2 delay",      (10, 110), (0, 10), assign_uair2),
+        Dial("uair3 delay",      (10, 130), (0, 10), assign_uair3),
+        Dial("sh2 delay",        (10, 150), (0, 10), assign_sh2),
+        Radio(("Lylat Side", "BF", "SBF", "PS2", "Town", "Lylat Mid", "Yoshi's", "Smashville", "Kalos"), (255, 10),
+              assign_plat_height)
     ]
 
 
@@ -207,25 +267,28 @@ class Window(Updateable):
     def __init__(self, width, height):
         self.dimensions = width, height
         self.screen = pygame.display.set_mode(self.dimensions)
+        self.__updateables = list()
+        self.__last_time_updated = None
+        self.__running = False
 
         def change_scenario(idx):
             if idx == 0:
                 self.__updateables = base_updatedables + full_bridge_scenario
             elif idx == 1:
                 self.__updateables = base_updatedables + platform_bridges_scenario
+            elif idx == 2:
+                self.__updateables = base_updatedables + dj_uair_scenario
 
         base_updatedables = [
             self,
-            Dial("Scenario", (width - 150, 10), (0, 1), change_scenario)
+            Dial("Scenario", (width - 150, 10), (0, 2), change_scenario)
         ]
 
         full_bridge_scenario = full_bridge_updateables()
         platform_bridges_scenario = platform_bridges_updatedables()
+        dj_uair_scenario = dj_uair_updatedables()
 
-        change_scenario(0)
-
-        self.__last_time_updated = None
-        self.__running = False
+        change_scenario(2)
 
     def enter_main_loop(self):
         self.__last_time_updated = time()
