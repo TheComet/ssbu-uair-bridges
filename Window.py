@@ -250,10 +250,10 @@ def dj_uair_updatedables():
     return [
         DJUairTrajectory(calc),
         DJUairHitstun(calc),
-        Dial("Incoming hitstun", (10, 10), (0, 18), assign_incoming_hitstun, value=15),
+        Dial("Incoming hitstun", (10, 10), (0, 18), assign_incoming_hitstun, value=14),
         Dial("fh1 delay",        (10, 30), (0, 10), assign_fh1),
         Dial("ff delay",         (10, 50), (0, 20), assign_ff1),
-        Dial("dj delay",         (10, 70), (0, 20), assign_dj1, value=5),
+        Dial("dj delay",         (10, 70), (0, 20), assign_dj1, value=6),
         Dial("uair1 delay",      (10, 90), (0, 10), assign_uair1),
         Dial("uair2 delay",      (10, 110), (0, 10), assign_uair2),
         Dial("uair3 delay",      (10, 130), (0, 10), assign_uair3),
@@ -274,21 +274,25 @@ class Window(Updateable):
         def change_scenario(idx):
             if idx == 0:
                 self.__updateables = base_updatedables + full_bridge_scenario
+                self.scenario_dial.text = "Full Bridges"
             elif idx == 1:
                 self.__updateables = base_updatedables + platform_bridges_scenario
+                self.scenario_dial.text = "Platform Extension 1"
             elif idx == 2:
                 self.__updateables = base_updatedables + dj_uair_scenario
+                self.scenario_dial.text = "Platform Extension 2"
 
+        self.scenario_dial = Dial("", (width - 250, 10), (0, 2), change_scenario)
         base_updatedables = [
             self,
-            Dial("Scenario", (width - 150, 10), (0, 2), change_scenario)
+            self.scenario_dial
         ]
 
         full_bridge_scenario = full_bridge_updateables()
         platform_bridges_scenario = platform_bridges_updatedables()
         dj_uair_scenario = dj_uair_updatedables()
 
-        change_scenario(2)
+        change_scenario(0)
 
     def enter_main_loop(self):
         self.__last_time_updated = time()
